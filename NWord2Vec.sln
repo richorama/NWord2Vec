@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NWord2Vec", "NWord2Vec\NWord2Vec.csproj", "{A058189C-3DBF-487E-95BC-905B139F38BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NWord2Vec.Tests", "NWord2Vec.Tests\NWord2Vec.Tests.csproj", "{D5A944A9-C99F-42BC-A38B-25B4C72ACE22}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A058189C-3DBF-487E-95BC-905B139F38BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A058189C-3DBF-487E-95BC-905B139F38BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A058189C-3DBF-487E-95BC-905B139F38BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A058189C-3DBF-487E-95BC-905B139F38BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5A944A9-C99F-42BC-A38B-25B4C72ACE22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5A944A9-C99F-42BC-A38B-25B4C72ACE22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5A944A9-C99F-42BC-A38B-25B4C72ACE22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5A944A9-C99F-42BC-A38B-25B4C72ACE22}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
