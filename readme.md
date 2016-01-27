@@ -1,5 +1,7 @@
 # NWord2Vec
 
+[![Build status](https://ci.appveyor.com/api/projects/status/f5xq503sdm2704kd?svg=true)](https://ci.appveyor.com/project/richorama/nword2vec)
+
 C# library for working with [Word2Vec](https://code.google.com/p/word2vec/) models.
 
 ## Usage
