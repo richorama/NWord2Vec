@@ -41,8 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="IModelSource.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="ModelSourceFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextModelSource.cs" />
     <Compile Include="WordDistance.cs" />
     <Compile Include="WordVector.cs" />
   </ItemGroup>

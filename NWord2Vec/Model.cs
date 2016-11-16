@@ -35,44 +35,13 @@ namespace NWord2Vec
 
         public static Model Load(string filename)
         {
-            using (var stream = File.Open(filename, FileMode.Open))
+            IModelSource source = new ModelSourceFactory().Manufacture(filename);
+            var m = new Model(source.Words, source.Size);
+            foreach (var wv in source.GetVectors())
             {
-                return Load(stream);
+                m.AddVector(wv);
             }
+            return m;
         }
-
-        public static Model Load(Stream stream)
-        {
-            var first = true;
-            Model model = null;
-            foreach (var line in Parse(stream))
-            {
-                if (first)
-                {
-                    var parts = line.Split(' ').Select(x => int.Parse(x.Trim())).ToArray();
-                    model = new Model(parts[0], parts[1]);
-                    first = false;
-                    continue;
-                }
-
-                var lineParts = line.Split(' ');
-                var word = lineParts[0];
-                var vector = lineParts.Skip(1).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => float.Parse(x)).ToArray();
-                model.AddVector(new WordVector(word, vector));
-            }
-            return model;
-        }
-
-        static IEnumerable<string> Parse(Stream stream)
-        {
-            var reader = new StreamReader(stream);
-            string line = null;
-            while (null != (line = reader.ReadLine()))
-            {
-                yield return line;
-            }
-        }
-
-
     }
 }
