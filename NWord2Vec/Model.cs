@@ -35,9 +35,14 @@ namespace NWord2Vec
 
         public static Model Load(string filename)
         {
-            IModelSource source = new ModelSourceFactory().Manufacture(filename);
+            return Load(new ModelSourceFactory().Manufacture(filename));
+        }
+
+        public static Model Load(IModelReader source)
+        {
             var m = new Model(source.Words, source.Size);
-            foreach (var wv in source.GetVectors())
+            WordVector wv;
+            while (null != (wv = source.ReadVector()))
             {
                 m.AddVector(wv);
             }

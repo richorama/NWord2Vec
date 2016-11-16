@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 
 namespace NWord2Vec.Tests
 {
@@ -8,7 +9,55 @@ namespace NWord2Vec.Tests
     public class LoadingTests
     {
         [TestMethod]
-        public void TestLoading()
+        public void TestLoadingBinary()
+        {
+            var model = Model.Load(@"E:\GoogleNews-vectors-negative300.bin");
+            Assert.IsNotNull(model);
+            Assert.AreEqual(3000000, model.Words);
+            Assert.AreEqual(300, model.Size);
+            Assert.AreEqual(3000000, model.Vectors.Count());
+        }
+
+        [TestMethod]
+        public void TestReLoadingText()
+        {
+            var model = Model.Load("model.txt");
+            Model m2;
+            var writer = new TextModelSerializer(model);
+            using (var s = new MemoryStream())
+            {
+                using (var sw = new StreamWriter(s, System.Text.Encoding.UTF8, 50, true))
+                {
+                    writer.Write(sw);
+                }
+                s.Seek(0, SeekOrigin.Begin);
+                using ( var tmr = new TextModelReader(s) )
+                {
+                    m2 = Model.Load(tmr);
+                }
+            }
+            Assert.AreEqual(model.Words, m2.Words);
+            Assert.AreEqual(model.Size, m2.Size);
+        }
+
+        [TestMethod]
+        public void TestTextReset()
+        {
+            using (var fr = File.OpenRead("model.txt"))
+            {
+                var reader = new TextModelReader(fr);
+                var wv1 = reader.ReadVector();
+                reader.Reset();
+                var wv2 = reader.ReadVector();
+                Assert.AreEqual(4501, reader.Words);
+                Assert.AreEqual(100, reader.Size);
+                Assert.AreEqual(wv1.Word, wv2.Word);
+                CollectionAssert.AreEqual(wv1.Vector, wv2.Vector);
+            }
+        }
+
+        [TestMethod]
+        public void TestLoadingText()
         {
             var model = Model.Load("model.txt");
             Assert.IsNotNull(model);

@@ -8,12 +8,14 @@ namespace NWord2Vec
 {
     public class ModelSourceFactory
     {
-        public IModelSource Manufacture(string filePath)
+        public IModelReader Manufacture(string filePath)
         {
             switch (System.IO.Path.GetExtension(filePath))
             {
                 case ".txt":
-                    return new TextModelSource(filePath);
+                    return new TextModelReader(System.IO.File.OpenRead(filePath));
+                case ".bin":
+                    return new BinaryModelReader(System.IO.File.OpenRead(filePath));
                 default:
                     var error = new InvalidOperationException("Unrecognized file type");
                     error.Data.Add("extension", System.IO.Path.GetExtension(filePath));
