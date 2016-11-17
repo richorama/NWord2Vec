@@ -35,7 +35,7 @@ namespace NWord2Vec
 
         public static Model Load(string filename)
         {
-            return Load(new ModelSourceFactory().Manufacture(filename));
+            return Load(new ModelReaderFactory().Manufacture(filename));
         }
 
         public static Model Load(IModelReader source)
@@ -45,6 +45,10 @@ namespace NWord2Vec
             while (null != (wv = source.ReadVector()))
             {
                 m.AddVector(wv);
+                if (wv.Word == "ruble_firmed")
+                {
+                    Console.WriteLine("Woo!");
+                }
             }
             return m;
         }

@@ -8,30 +8,71 @@ namespace NWord2Vec.Tests
     [TestClass]
     public class LoadingTests
     {
+
         [TestMethod]
-        public void TestLoadingBinary()
+        public void TestLoadingText()
         {
-            var model = Model.Load(@"E:\GoogleNews-vectors-negative300.bin");
-            Assert.IsNotNull(model);
-            Assert.AreEqual(3000000, model.Words);
-            Assert.AreEqual(300, model.Size);
-            Assert.AreEqual(3000000, model.Vectors.Count());
+            var model = Model.Load("model.txt");
+            TestLoadedModel(model);
+
         }
+
+        [TestMethod]
+        public void TestLoadingCompressedText()
+        {
+            var model = Model.Load("model.txt.gz");
+            TestLoadedModel(model);
+        }
+
 
         [TestMethod]
         public void TestReLoadingText()
         {
             var model = Model.Load("model.txt");
             Model m2;
-            var writer = new TextModelSerializer(model);
             using (var s = new MemoryStream())
             {
-                using (var sw = new StreamWriter(s, System.Text.Encoding.UTF8, 50, true))
+                using (var writer = new TextModelWriter(s, true))
                 {
-                    writer.Write(sw);
+                    writer.Write(model);
                 }
                 s.Seek(0, SeekOrigin.Begin);
-                using ( var tmr = new TextModelReader(s) )
+                using (var tmr = new TextModelReader(s))
+                {
+                    m2 = Model.Load(tmr);
+                }
+            }
+            Assert.AreEqual(model.Words, m2.Words);
+            Assert.AreEqual(model.Size, m2.Size);
+        }
+
+        [TestMethod]
+        public void TestLoadingBinary()
+        {
+            var model = Model.Load(@"model.bin");
+            TestLoadedModel(model);
+        }
+
+        [TestMethod]
+        public void TestLoadingCompressedBinary()
+        {
+            var model = Model.Load(@"model.bin.gz");
+            TestLoadedModel(model);
+        }
+
+        [TestMethod]
+        public void TestReLoadingBinary()
+        {
+            var model = Model.Load("model.txt");
+            Model m2;
+            using (var s = new MemoryStream())
+            {
+                using (var writer = new BinaryModelWriter(s, true))
+                {
+                    writer.Write(model);
+                }
+                s.Seek(0, SeekOrigin.Begin);
+                using (var tmr = new BinaryModelReader(s))
                 {
                     m2 = Model.Load(tmr);
                 }
@@ -56,10 +97,8 @@ namespace NWord2Vec.Tests
             }
         }
 
-        [TestMethod]
-        public void TestLoadingText()
+        private static void TestLoadedModel(Model model)
         {
-            var model = Model.Load("model.txt");
             Assert.IsNotNull(model);
             Assert.AreEqual(4501, model.Words);
             Assert.AreEqual(100, model.Size);
@@ -95,7 +134,6 @@ namespace NWord2Vec.Tests
 
             var vector = king.Subtract(man).Add(woman);
             Console.WriteLine(model.NearestSingle(vector));
-
         }
 
         [TestMethod]

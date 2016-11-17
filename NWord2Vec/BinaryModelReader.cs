@@ -9,8 +9,6 @@ namespace NWord2Vec
 {
     public class BinaryModelReader : IModelReader
     {
-        private const int MAX_SIZE = 50;
-
         public BinaryModelReader(Stream stream, bool lineBreaks = false, bool leaveOpen = false)
         {
             Stream = stream;
@@ -68,7 +66,7 @@ namespace NWord2Vec
 
                 for (int j = 0; j < Size; j++)
                 {
-                    vector[j] = ReadFloat(br);
+                    vector[j] = br.ReadSingle();
                 }
 
                 result = new WordVector(word, vector);
@@ -90,33 +88,41 @@ namespace NWord2Vec
             }
         }
 
-        private float ReadFloat(BinaryReader br)
+        private static bool IsStringEnd(char[] c)
         {
-            byte[] bytes = new byte[4];
-            br.Read(bytes, 0, 4);
-            return BitConverter.ToSingle(bytes, 0);
+            return c == null || c[0] == 32 || c[0] == 10;
         }
 
-
-        private String ReadString(BinaryReader dis)
+        private static char[] ReadUTF8Char(Stream s)
         {
-            byte[] bytes = new byte[MAX_SIZE];
-            byte b = dis.ReadByte();
-            int i = -1;
-            StringBuilder sb = new StringBuilder();
-            while (b != 32 && b != 10)
+            byte[] bytes = new byte[4];
+            var enc = new UTF8Encoding(false, true);
+            if (1 != s.Read(bytes, 0, 1))
+                return null;
+            if (bytes[0] <= 0x7F) //Single byte character
             {
-                i++;
-                bytes[i] = b;
-                b = dis.ReadByte();
-                if (i == 49)
-                {
-                    sb.Append(Encoding.UTF8.GetString(bytes));
-                    i = -1;
-                    bytes = new byte[MAX_SIZE];
-                }
+                return enc.GetChars(bytes, 0, 1);
             }
-            sb.Append(Encoding.UTF8.GetString(bytes, 0, i + 1));
+            else
+            {
+                var remainingBytes =
+                    ((bytes[0] & 240) == 240) ? 3 : (
+                    ((bytes[0] & 224) == 224) ? 2 : (
+                    ((bytes[0] & 192) == 192) ? 1 : -1
+                ));
+                if (remainingBytes == -1)
+                    return null;
+                s.Read(bytes, 1, remainingBytes);
+                return enc.GetChars(bytes, 0, remainingBytes + 1);
+            }
+        }
+
+        private String ReadString(BinaryReader br)
+        {
+            StringBuilder sb = new StringBuilder();
+            char[] c = null;
+            while (!IsStringEnd((c = ReadUTF8Char(br.BaseStream))))
+                sb.Append(c);
             return sb.ToString();
         }
     }
