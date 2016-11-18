@@ -40,9 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryModelReader.cs" />
+    <Compile Include="BinaryModelWriter.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="IModelReader.cs" />
+    <Compile Include="IModelWriter.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="ModelReaderFactory.cs" />
+    <Compile Include="ModelWriterFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextModelWriter.cs" />
+    <Compile Include="TextModelReader.cs" />
     <Compile Include="WordDistance.cs" />
     <Compile Include="WordVector.cs" />
   </ItemGroup>
