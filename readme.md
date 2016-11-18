@@ -4,6 +4,14 @@
 
 C# library for working with [Word2Vec](https://code.google.com/p/word2vec/) models.
 
+## Installation
+
+```
+PM> Install-Package NWord2Vec
+```
+
+[View on Nuget](https://www.nuget.org/packages/NWord2Vec/)
+
 ## Usage
 
 First build your model with the word2vec command line tools.
@@ -17,7 +25,7 @@ var model = Model.Load("model.txt");
 // Find the simliarity between words
 model.Distance("whale", "boat"); // 2.718597934021814
 
-model.Nearest("whale").Take(10); 
+model.Nearest("whale").Take(10);
 
 /*
 // returns
