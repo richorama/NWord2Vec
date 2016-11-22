@@ -45,10 +45,6 @@ namespace NWord2Vec
             while (null != (wv = source.ReadVector()))
             {
                 m.AddVector(wv);
-                if (wv.Word == "ruble_firmed")
-                {
-                    Console.WriteLine("Woo!");
-                }
             }
             return m;
         }
