@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Globalization;
 
 namespace NWord2Vec
 {
@@ -20,8 +21,8 @@ namespace NWord2Vec
         {
             using (var br = GetReader())
             {
-                Words = int.Parse(ReadString(br));
-                Size = int.Parse(ReadString(br));
+                Words = int.Parse(ReadString(br), CultureInfo.InvariantCulture);
+                Size = int.Parse(ReadString(br), CultureInfo.InvariantCulture);
             }
         }
 

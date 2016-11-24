@@ -2,6 +2,8 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Threading;
+using System.Globalization;
 
 namespace NWord2Vec.Tests
 {
@@ -12,6 +14,15 @@ namespace NWord2Vec.Tests
         [TestMethod]
         public void TestLoadingText()
         {
+            var model = Model.Load("model.txt");
+            TestLoadedModel(model);
+
+        }
+
+        [TestMethod]
+        public void TestLoadingTextInAnotherCulture()
+        {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CreateSpecificCulture("fr-FR");
             var model = Model.Load("model.txt");
             TestLoadedModel(model);
 

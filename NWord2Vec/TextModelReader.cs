@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Globalization;
 
 namespace NWord2Vec
 {
@@ -19,7 +20,7 @@ namespace NWord2Vec
         private void ReadHeader()
         {
             var headerLine = Reader.ReadLine();
-            var parts = headerLine.Split(' ').Select(x => int.Parse(x.Trim())).ToArray();
+            var parts = headerLine.Split(' ').Select(x => int.Parse(x.Trim(), CultureInfo.InvariantCulture)).ToArray();
             Words = parts[0];
             Size = parts[1];
         }
@@ -52,7 +53,7 @@ namespace NWord2Vec
                 return null;
             var lineParts = line.Split(' ');
             var word = lineParts[0];
-            var vector = lineParts.Skip(1).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => float.Parse(x)).ToArray();
+            var vector = lineParts.Skip(1).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => float.Parse(x, CultureInfo.InvariantCulture)).ToArray();
             return new WordVector(word, vector);
         }
 
