@@ -107,5 +107,8 @@ namespace NWord2Vec
             return word1.Distance(word2.Vector);
         }
 
+
+
     }
+
 }

@@ -21,5 +21,18 @@ namespace NWord2Vec
         {
             return this.Word;
         }
+
+
+        public static float[] operator +(WordVector word1, WordVector word2)
+        {
+            return word1.Add(word2);
+        }
+
+        public static float[] operator -(WordVector word1, WordVector word2)
+        {
+            return word1.Subtract(word2);
+        }
+
+        
     }
 }

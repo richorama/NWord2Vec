@@ -179,6 +179,27 @@ namespace NWord2Vec.Tests
             Assert.AreEqual(5, result);
         }
 
+        [TestMethod]
+        public void TestVectorAdditionOperator()
+        {
+            var x = new WordVector("word1", new float[] { 1, 3, 4 });
+            var y = new WordVector("word2", new float[] { 1, 0, 0 });
+            var z = x + y;
+
+            Assert.IsNotNull(z);
+            CollectionAssert.AreEqual(new float[] { 2, 3, 4 }, z);
+        }
+
+        [TestMethod]
+        public void TestVectorSubtractionOperator()
+        {
+            var x = new WordVector("word1", new float[] { 1, 3, 4 });
+            var y = new WordVector("word2", new float[] { 1, 0, 0 });
+            var z = x - y;
+
+            Assert.IsNotNull(z);
+            CollectionAssert.AreEqual(new float[] { 0, 3, 4 }, z);
+        }
 
 
     }
