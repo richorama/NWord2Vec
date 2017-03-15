@@ -48,7 +48,7 @@ namespace NWord2Vec.Tests
                     writer.Write(model);
                 }
                 s.Seek(0, SeekOrigin.Begin);
-                using (var tmr = new TextModelReader(s))
+                var tmr = new TextModelReader(s);
                 {
                     m2 = Model.Load(tmr);
                 }
@@ -83,30 +83,14 @@ namespace NWord2Vec.Tests
                     writer.Write(model);
                 }
                 s.Seek(0, SeekOrigin.Begin);
-                using (var tmr = new BinaryModelReader(s))
-                {
-                    m2 = Model.Load(tmr);
-                }
+                var tmr = new BinaryModelReader(s);
+                m2 = Model.Load(tmr);
             }
             Assert.AreEqual(model.Words, m2.Words);
             Assert.AreEqual(model.Size, m2.Size);
         }
 
-        [TestMethod]
-        public void TestTextReset()
-        {
-            using (var fr = File.OpenRead("model.txt"))
-            {
-                var reader = new TextModelReader(fr);
-                var wv1 = reader.ReadVector();
-                reader.Reset();
-                var wv2 = reader.ReadVector();
-                Assert.AreEqual(4501, reader.Words);
-                Assert.AreEqual(100, reader.Size);
-                Assert.AreEqual(wv1.Word, wv2.Word);
-                CollectionAssert.AreEqual(wv1.Vector, wv2.Vector);
-            }
-        }
+      
 
         private static void TestLoadedModel(Model model)
         {

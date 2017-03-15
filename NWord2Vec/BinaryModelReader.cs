@@ -12,81 +12,57 @@ namespace NWord2Vec
     {
         public BinaryModelReader(Stream stream, bool lineBreaks = false, bool leaveOpen = false)
         {
-            Stream = stream;
-            LeaveOpen = leaveOpen;
-            ReadHeader();
+            this.Stream = stream;
         }
 
-        private void ReadHeader()
+        public Model Open()
         {
-            using (var br = GetReader())
+            using (var reader = new BinaryReader(Stream, Encoding.UTF8, true))
             {
-                Words = int.Parse(ReadString(br), CultureInfo.InvariantCulture);
-                Size = int.Parse(ReadString(br), CultureInfo.InvariantCulture);
+                var header = ReadHeader(reader);
+                var words = header[0];
+                var size = header[1];
+
+                var vectors = new List<WordVector>();
+                for (var i = 0; i < words; i++)
+                {
+                    vectors.Add(ReadVector(reader, words, size));
+                }
+
+                return new Model(words, size, vectors);
             }
+
         }
 
-        private BinaryReader GetReader()
+
+        int[] ReadHeader(BinaryReader reader)
         {
-            return new BinaryReader(Stream, Encoding.UTF8, true);
+            var words = int.Parse(ReadString(reader), CultureInfo.InvariantCulture);
+            var size = int.Parse(ReadString(reader), CultureInfo.InvariantCulture);
+
+            return new int[] { words, size };
         }
 
         public bool LineBreaks { get; private set; }
 
-        public void Reset()
-        {
-            Stream.Seek(0, SeekOrigin.Begin);
-            CurrentIndex = 0;
-            ReadHeader();
-        }
+        Stream Stream { get; set; }
 
-        public int Size
+        public WordVector ReadVector(BinaryReader br, int words, int size)
         {
-            get; private set;
-        }
+            var word = ReadString(br);
 
-        public int Words
-        {
-            get; private set;
-        }
+            var vector = new float[size];
 
-        private Stream Stream { get; set; }
-        private bool LeaveOpen { get; set; }
-        private int CurrentIndex { get; set; }
-
-        public WordVector ReadVector()
-        {
-            if (CurrentIndex == Words)
-                return null;
-            WordVector result = null;
-            using (var br = GetReader())
+            for (int j = 0; j < size; j++)
             {
-                var word = ReadString(br);
-
-                float[] vector = new float[Size];
-
-                for (int j = 0; j < Size; j++)
-                {
-                    vector[j] = br.ReadSingle();
-                }
-
-                result = new WordVector(word, vector);
-
-                if (LineBreaks)
-                {
-                    br.ReadByte(); // consume line break
-                }
+                vector[j] = br.ReadSingle();
             }
-            CurrentIndex++;
+
+            var result = new WordVector(word, vector);
+
+            if (LineBreaks) br.ReadByte(); // consume line break
+       
             return result;
-        }
-
-        public void Dispose()
-        {
-            if (!LeaveOpen)
-            {
-                Stream.Dispose();
-            }
         }
 
         private static bool IsStringEnd(char[] c)
@@ -98,8 +74,7 @@ namespace NWord2Vec
         {
             byte[] bytes = new byte[4];
             var enc = new UTF8Encoding(false, true);
-            if (1 != s.Read(bytes, 0, 1))
-                return null;
+            if (1 != s.Read(bytes, 0, 1)) return null;
             if (bytes[0] <= 0x7F) //Single byte character
             {
                 return enc.GetChars(bytes, 0, 1);
@@ -111,19 +86,20 @@ namespace NWord2Vec
                     ((bytes[0] & 224) == 224) ? 2 : (
                     ((bytes[0] & 192) == 192) ? 1 : -1
                 ));
-                if (remainingBytes == -1)
-                    return null;
+                if (remainingBytes == -1) return null;
                 s.Read(bytes, 1, remainingBytes);
                 return enc.GetChars(bytes, 0, remainingBytes + 1);
             }
         }
 
-        private String ReadString(BinaryReader br)
+        string ReadString(BinaryReader br)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             char[] c = null;
             while (!IsStringEnd((c = ReadUTF8Char(br.BaseStream))))
+            {
                 sb.Append(c);
+            }
             return sb.ToString();
         }
     }
