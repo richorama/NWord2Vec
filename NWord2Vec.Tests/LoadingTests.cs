@@ -179,10 +179,10 @@ namespace NWord2Vec.Tests
         {
             var x = new WordVector("word1", new float[] { 1, 3, 4 });
             var y = new WordVector("word2", new float[] { 1, 0, 0 });
-            var z = x - y;
+            var z = y + x - y;
 
             Assert.IsNotNull(z);
-            CollectionAssert.AreEqual(new float[] { 0, 3, 4 }, z);
+            CollectionAssert.AreEqual(new float[] { 1, 3, 4 }, z);
         }
 
 

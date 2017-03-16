@@ -53,6 +53,10 @@ var vector = king.Subtract(man).Add(woman);
 
 model.NearestSingle(vector); // queen
 
+// alternatively you can add or subtract directly
+
+var vector = king + man;
+
 ```
 
 ## License
