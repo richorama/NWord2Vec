@@ -72,6 +72,14 @@ namespace NWord2Vec.Tests
         }
 
         [TestMethod]
+        public void TestLoadingTextFileWithNoHeader()
+        {
+            var model = Model.Load(@"modelWithNoHeader.txt");
+            Assert.AreEqual(2, model.Words);
+        }
+
+
+        [TestMethod]
         public void TestReLoadingBinary()
         {
             var model = Model.Load("model.txt");

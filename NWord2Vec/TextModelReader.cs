@@ -29,14 +29,24 @@ namespace NWord2Vec
                 {
                     vectors.Add(vector);
                 }
-                return new Model(words, size, vectors);
+                return new Model(words == 0 ? vectors.Count : words, size == 0 ? (int)this.Stream.Length : size, vectors);
             }
         }
 
         int[] ReadHeader(StreamReader reader)
         {
             var headerLine = reader.ReadLine();
-            return headerLine.Split(' ').Select(x => int.Parse(x.Trim(), CultureInfo.InvariantCulture)).ToArray();
+
+            var headerCount = headerLine.Split(' ').Length;
+
+            if (headerCount == 2)
+            {
+                return headerLine.Split(' ').Select(x => int.Parse(x.Trim(), CultureInfo.InvariantCulture)).ToArray();
+            }
+
+            //this.Stream.Position = 0;
+            return new int[] { 0, 0 };
+            
         }
 
         WordVector ReadVector(StreamReader reader)
